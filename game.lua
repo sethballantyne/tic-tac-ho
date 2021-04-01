@@ -13,6 +13,7 @@ BOARD_MIDDLE_RIGHT =		32
 BOARD_BOTTOM_LEFT =			64
 BOARD_BOTTOM_CENTER = 		128
 BOARD_BOTTOM_RIGHT =		256
+BOARD_NO_FREE_CELLS =       BOARD_TOP_LEFT | BOARD_TOP_CENTER | BOARD_TOP_RIGHT | BOARD_MIDDLE_LEFT | BOARD_MIDDLE_CENTER | BOARD_MIDDLE_RIGHT | BOARD_BOTTOM_LEFT | BOARD_BOTTOM_CENTER | BOARD_BOTTOM_RIGHT
 
 TOP_HORIZ_LINE = 			BOARD_TOP_LEFT | BOARD_TOP_CENTER | BOARD_TOP_RIGHT
 MIDDLE_HORIZ_LINE = 		BOARD_MIDDLE_LEFT | BOARD_MIDDLE_CENTER | BOARD_MIDDLE_RIGHT
@@ -155,13 +156,18 @@ function MouseButtonClicked()
 
 			if xExpr and yExpr then
 				local bit = 1 << (i - 1);
-				if playerBoard & bit ~= bit and aiBoard & bit ~= bit then
-					Console_Print("Placing players piece");
-					playerBoard = (playerBoard | bit);
+				if CellIsEmpty(bit) then
+					PlacePiece(PLAYER_MEAT_BAG, bit)
 					turn = PLAYER_AI
 				end
+			--	local bit = 1 << (i - 1);
+			--	if playerBoard & bit ~= bit and aiBoard & bit ~= bit then
+			--		Console_Print("Placing players piece");
+			--		playerBoard = (playerBoard | bit);
+			--		turn = PLAYER_AI
+			--	end
 
-				return
+			--	return
 			end
 		end
 	end
@@ -170,9 +176,9 @@ end
 function Create()
 	gameColourKey = Video_MapRGB(255, 0, 255);
 
-	bmpFont = BmpFont_Load(bmpFontCharWidth, bmpFontCharHeight, "green_font.bmp", gameColourKey);
-	logoSprite = Sprite_Load("logo.png", -1);
-	boardSprite = Sprite_Load("blank_grid.png", gameColourKey);
+	bmpFont = BmpFont_Load(bmpFontCharWidth, bmpFontCharHeight, "data//art//green_font.bmp", gameColourKey);
+	logoSprite = Sprite_Load("data//art//logo.png", -1);
+	boardSprite = Sprite_Load("data//art//blank_grid.png", gameColourKey);
 
     Input_RegisterKey(KEY_SPACE, SpaceKeyPressed)
     Input_RegisterMouseButton(BUTTON_LEFT, MouseButtonClicked)
@@ -206,8 +212,10 @@ end
 
 function PlacePiece(playerType, bit)
 	if playerType == PLAYER_AI then
+		Console_Print(string.format("AI putting piece at %d", bit))
 		aiBoard = aiBoard | bit;
 	else
+		Console_Print(string.format("Player putting piece at %d", bit))
 		playerBoard = playerBoard | bit;
 	end
 end
@@ -243,24 +251,43 @@ function ProcessAI()
 		end
 	end
 
+
 	-- just find a blank and place a piece ffs
-	local i = 1
-	while i <= 9 do
-		local cell = math.random(1, 9)
-		local bit = 1 << (cell - 1)
+	-- step 1: build a list of available cells
+	local availableCells = {}
+	local debugStr = "";
+	for i = 1, 9 do
+		local bit = 1 << (i - 1)
 
-		if CellIsEmpty(bit) == true then
-			Console_Print(string.format("AI making random move at cell index %d", cell));
-			PlacePiece(PLAYER_AI, bit)
-			return 0
+		if (playerBoard | aiBoard) & bit ~= bit then
+			-- bit hasn't been set, so the AI can place its piece here
+			local tableSize = #availableCells
+			availableCells[tableSize + 1] = i
+			debugStr = debugStr .. string.format("  %d", i)
 		end
-
-		i = i + 1
 	end
+
+	Console_Print("Available cells: " .. debugStr)
+
+	-- got our list, now choose a cell and place the piece there
+	local index = math.random(1, #availableCells)
+	local bit = 1 << (availableCells[index] - 1)
+	PlacePiece(PLAYER_AI, bit)
 end
 
 function Update()
-	if gameState == GAME_STATE_PLAYING and turn == PLAYER_AI then
+	local gameBoard = aiBoard | playerBoard;
+	Console_Print(string.format("Update: gameboard: %d BOARD_NO_FREE_CELLS:  %d gameState: %d", gameBoard,BOARD_NO_FREE_CELLS, gameState))
+
+	if gameBoard == BOARD_NO_FREE_CELLS and gameState == GAME_STATE_PLAYING then
+		if CheckForPossibleWin(PLAYER_MEAT_BAG, 0) == 1 then
+			Console_Print(string.format("Round %d WIN!", round))
+			gameState = GAME_STATE_WIN
+		else
+			Console_Print(string.format("Round %d DRAW!", round))
+			gameState = GAME_STATE_DRAW
+		end
+	elseif gameState == GAME_STATE_PLAYING and turn == PLAYER_AI then
 		local result = ProcessAI()
 
 		if result == 2 then -- AI has won
@@ -270,18 +297,6 @@ function Update()
 		end
 
 		turn = PLAYER_MEAT_BAG
-	end
-
-	local gameBoard = aiBoard | playerBoard;
-
-	if gameBoard == 511 and gameState == GAME_STATE_PLAYING then
-		if CheckForPossibleWin(PLAYER_MEAT_BAG, 0) == 1 then
-			Console_Print(string.format("Round %d WIN!", round))
-			gameState = GAME_STATE_WIN
-		else
-			Console_Print(string.format("Round %d DRAW!", round))
-			gameState = GAME_STATE_DRAW
-		end
 	end
 end
 
