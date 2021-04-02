@@ -158,7 +158,14 @@ function MouseButtonClicked()
 				local bit = 1 << (i - 1);
 				if CellIsEmpty(bit) then
 					PlacePiece(PLAYER_MEAT_BAG, bit)
-					turn = PLAYER_AI
+
+					if CheckForPossibleWin(PLAYER_MEAT_BAG, 0) then
+						gameState = GAME_STATE_WIN
+					elseif (aiBoard | playerBoard) == BOARD_NO_FREE_CELLS then
+						gameState = GAME_STATE_DRAW
+					else
+						turn = PLAYER_AI
+					end
 				end
 			--	local bit = 1 << (i - 1);
 			--	if playerBoard & bit ~= bit and aiBoard & bit ~= bit then
@@ -202,34 +209,30 @@ function CheckForPossibleWin(playerType, bit)
 
 	for i = 1, 8 do
 		if tempBoard & winningCombinations[i] == winningCombinations[i] then
-			Console_Print(string.format("CheckForPossibleWin: Winning combination %d hit. Index: %d", winningCombinations[i], i))
-			return 1
+			return true
 		end
 	end
 
-	return 0
+	return false
 end
 
 function PlacePiece(playerType, bit)
 	if playerType == PLAYER_AI then
-		Console_Print(string.format("AI putting piece at %d", bit))
 		aiBoard = aiBoard | bit;
 	else
-		Console_Print(string.format("Player putting piece at %d", bit))
 		playerBoard = playerBoard | bit;
 	end
 end
 
 function ProcessAI()
-	Console_Print("AI taking it's turn.");
+
 	-- check for any possible moves that will result in the AI winning in this round.
 	for i = 1, 9 do
 		local bit = 1 << (i - 1)
 
 		if CellIsEmpty(bit) == true then
-			local result = CheckForPossibleWin(PLAYER_AI, bit)
-			if result == 1 then
-				Console_Print(string.format("AI making a winning move at cell index %d", i));
+			--local result = CheckForPossibleWin(PLAYER_AI, bit)
+			if CheckForPossibleWin(PLAYER_AI, bit) then
 				PlacePiece(PLAYER_AI, bit)
 				return 2
 			end
@@ -242,9 +245,8 @@ function ProcessAI()
 		local bit = 1 << (i - 1)
 
 		if CellIsEmpty(bit) == true then
-			local result = CheckForPossibleWin(PLAYER_MEAT_BAG, bit)
-			if result == 1 then
-				Console_Print(string.format("AI making a blocking move at cell index %d", i));
+			--local result = CheckForPossibleWin(PLAYER_MEAT_BAG, bit)
+			if CheckForPossibleWin(PLAYER_MEAT_BAG, bit) then
 				PlacePiece(PLAYER_AI, bit)
 				return 1
 			end
@@ -255,7 +257,7 @@ function ProcessAI()
 	-- just find a blank and place a piece ffs
 	-- step 1: build a list of available cells
 	local availableCells = {}
-	local debugStr = "";
+
 	for i = 1, 9 do
 		local bit = 1 << (i - 1)
 
@@ -263,11 +265,8 @@ function ProcessAI()
 			-- bit hasn't been set, so the AI can place its piece here
 			local tableSize = #availableCells
 			availableCells[tableSize + 1] = i
-			debugStr = debugStr .. string.format("  %d", i)
 		end
 	end
-
-	Console_Print("Available cells: " .. debugStr)
 
 	-- got our list, now choose a cell and place the piece there
 	local index = math.random(1, #availableCells)
@@ -276,27 +275,17 @@ function ProcessAI()
 end
 
 function Update()
-	local gameBoard = aiBoard | playerBoard;
-	Console_Print(string.format("Update: gameboard: %d BOARD_NO_FREE_CELLS:  %d gameState: %d", gameBoard,BOARD_NO_FREE_CELLS, gameState))
-
-	if gameBoard == BOARD_NO_FREE_CELLS and gameState == GAME_STATE_PLAYING then
-		if CheckForPossibleWin(PLAYER_MEAT_BAG, 0) == 1 then
-			Console_Print(string.format("Round %d WIN!", round))
-			gameState = GAME_STATE_WIN
-		else
-			Console_Print(string.format("Round %d DRAW!", round))
-			gameState = GAME_STATE_DRAW
-		end
-	elseif gameState == GAME_STATE_PLAYING and turn == PLAYER_AI then
+	if gameState == GAME_STATE_PLAYING and turn == PLAYER_AI then
 		local result = ProcessAI()
 
 		if result == 2 then -- AI has won
-			Console_Print(string.format("Round %d LOSS!", round))
 			gameState = GAME_STATE_LOSS;
 			return
+		elseif aiBoard | playerBoard == BOARD_NO_FREE_CELLS then
+			gameState = GAME_STATE_DRAW
+		else
+			turn = PLAYER_MEAT_BAG
 		end
-
-		turn = PLAYER_MEAT_BAG
 	end
 end
 
