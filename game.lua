@@ -86,7 +86,7 @@ end
 
 function DrawTitleScreen()
 	BmpFont_PrintLine(bmpFont, 87, "TIC-TAC-HO!");
-	BmpFont_PrintLine(bmpFont, 110, "v0.1");
+	BmpFont_PrintLine(bmpFont, 110, "v1.0");
 	BmpFont_PrintLine(bmpFont, 178, "BY SETH BALLANTYNE");
 	BmpFont_PrintLine(bmpFont, 201, "..AND..");
 	BmpFont_PrintLine(bmpFont, 224, "VERONICA SHARMA! FUCK YEAH!");
