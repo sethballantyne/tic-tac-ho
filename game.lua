@@ -1,9 +1,38 @@
+--  _   _  ___  _____ _   __  _____ _   _ _____  ______ _      ___  _   _ _____ _____
+-- | | | |/ _ \/  __ \ | / / |_   _| | | |  ___| | ___ \ |    / _ \| \ | |  ___|_   _|
+-- | |_| / /_\ \ /  \/ |/ /    | | | |_| | |__   | |_/ / |   / /_\ \  \| | |__   | |
+-- |  _  |  _  | |   |    \    | | |  _  |  __|  |  __/| |   |  _  | . ` |  __|  | |
+-- | | | | | | | \__/\ |\  \   | | | | | | |___  | |   | |___| | | | |\  | |___  | |
+-- \_| |_|_| |_/\____|_| \_/   \_/ \_| |_|____/  \_|   \_____|_| |_|_| \_|____/  \_/
+
+
+-- TIC-TAC-HO!
+-- Copyright(c) 2021 Seth Ballantyne <seth.ballantyne@gmail.com>
+--
+-- Permission is hereby granted, free of charge, to any person obtaining a copy of this
+-- software and associated documentation files(the "Software"), to deal in the Software
+-- without restriction, including without limitation the rights to use, copy, modify, merge,
+-- publish, distribute, sublicense, and / or sell copies of the Software, and to permit persons
+-- to whom the Software is furnished to do so, subject to the following conditions :
+--
+-- The above copyright notice and this permission notice shall be included in all copies or
+-- substantial portions of the Software.
+--
+-- THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED,
+-- INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR
+-- PURPOSE AND NONINFRINGEMENT.IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE
+-- FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR
+-- OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
+-- DEALINGS IN THE SOFTWARE.
+
 GAME_STATE_TITLE_SCREEN = 	0
 GAME_STATE_PLAYING = 		1
 GAME_STATE_WIN = 			2
 GAME_STATE_DRAW = 			3
 GAME_STATE_LOSS = 			4
 
+-- bit flags that are used to toggle the appropriate bit when the player/AI
+-- selects the relevant cell.
 BOARD_TOP_LEFT =			1
 BOARD_TOP_CENTER =			2
 BOARD_TOP_RIGHT =			4
@@ -15,6 +44,7 @@ BOARD_BOTTOM_CENTER = 		128
 BOARD_BOTTOM_RIGHT =		256
 BOARD_NO_FREE_CELLS =       BOARD_TOP_LEFT | BOARD_TOP_CENTER | BOARD_TOP_RIGHT | BOARD_MIDDLE_LEFT | BOARD_MIDDLE_CENTER | BOARD_MIDDLE_RIGHT | BOARD_BOTTOM_LEFT | BOARD_BOTTOM_CENTER | BOARD_BOTTOM_RIGHT
 
+-- winning lines
 TOP_HORIZ_LINE = 			BOARD_TOP_LEFT | BOARD_TOP_CENTER | BOARD_TOP_RIGHT
 MIDDLE_HORIZ_LINE = 		BOARD_MIDDLE_LEFT | BOARD_MIDDLE_CENTER | BOARD_MIDDLE_RIGHT
 BOTTOM_HORIZ_LINE = 		BOARD_BOTTOM_LEFT | BOARD_BOTTOM_CENTER | BOARD_BOTTOM_RIGHT
@@ -24,26 +54,57 @@ RIGHT_VERTICAL_LINE = 		BOARD_TOP_RIGHT  | BOARD_MIDDLE_RIGHT | BOARD_BOTTOM_RIG
 TL_TO_BR_LINE =				BOARD_TOP_LEFT | BOARD_MIDDLE_CENTER | BOARD_BOTTOM_RIGHT
 TR_TO_BL_LINE = 			BOARD_TOP_RIGHT | BOARD_MIDDLE_CENTER | BOARD_BOTTOM_LEFT
 
-TURN_PLAYER = 0
-TURN_AI = 0
-
 PLAYER_AI = 0
 PLAYER_MEAT_BAG = 1
 
 KEY_SPACE = 32
-BUTTON_LEFT = 1
+BUTTON_LEFT = 1 -- mouse button
 
+------------------------------------------------------------------------------------------------------
+--
+-- GRAPHICS PROPERTIES
+--
+-- IF YOU CHANGE THE SIZES/LOCATIONS OF THE ART, UPDATE THESE DAYS!
+--
+-- hard coding this shit was painful, but time's a factor.
+------------------------------------------------------------------------------------------------------
+-- pixel coordianates for the top left of the board.
+-- used for drawing and mouse calculations
 boardCoords = { 80, 56 }
+
+-- top left coordinate of the first cell on the board, refered to as BOARD_TOP_LEFT above.
+-- These coords are needed for drawing mouse calculations; all 9 cells are tiled bitmaps,
+-- so their location is tied to these coords.
 initialCellCoords = { 83, 59 }
+
+-- width and height of each cell in pixels.
 cellWidth = 153
 cellHeight = 113
+
+-- width of the each grid line in pixels.
 lineWidth = 7
 
+------------------------------------------------------------------------------------------------------
+--
+-- END GRAPHICS PROPERTIES
+--
+------------------------------------------------------------------------------------------------------
+-- the coordinates of each cell; this is calculated at start up and depends on the graphics
+-- properties above. It's needed for determining which cell was clicked on, drawing etc.
 cellCoords = {}
 
+-- whose turn it is. It's value will be either PLAYER_AI or PLAYER_MEAT_BAG
 turn = 0;
+
+-- holds the font used to draw the text.
 bmpFont = 0;
+
+-- colour used for transparency when drawing bitmaps.
+-- the game uses magenta, atm. RGB = 255, 0, 255.
 gameColourKey = 0
+
+-- width and height of the bitmap font in pixels.
+-- Required for drawing.
 bmpFontCharWidth = 18
 bmpFontCharHeight = 18
 
@@ -52,14 +113,21 @@ boardSprite = 0;
 
 gameState = GAME_STATE_TITLE_SCREEN
 
+-- ints that'll have the relevant bits set each time the AI/player places a piece on the board.
+-- see the BOARD_* globals above to see which cells set which bits. Essentially, we're not
+-- using an array to keep track of the board like most people do; we're using individual bits.
+-- It makes more sense to me. :-P
 playerBoard = 0;
 aiBoard = 0;
 
+-- all the possible winning lines. Add/remove more combinations to customize the game! YAS!
 winningCombinations = { TOP_HORIZ_LINE, MIDDLE_HORIZ_LINE, BOTTOM_HORIZ_LINE, LEFT_VERTICAL_LINE,
 						MIDDLE_VERTICAL_LINE, RIGHT_VERTICAL_LINE, TL_TO_BR_LINE, TR_TO_BL_LINE
 					}
 
+-- counter to keep track of how many turns have been made in the current game.
 round = 0;
+
 
 function BuildCellCoords(startingRow)
 	for y = 1, 3 do
