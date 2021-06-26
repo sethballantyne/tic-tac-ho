@@ -256,7 +256,7 @@ function Create()
 
     bmpFont = BmpFont_Load(bmpFontCharWidth, bmpFontCharHeight, "data//art//green_font.bmp", gameColourKey);
     logoSprite = Sprite_Load("data//art//logo.png", -1);
-	boardSprite = Sprite_Load("data//art//blank_grid.png", gameColourKey);
+    boardSprite = Sprite_Load("data//art//blank_grid.png", gameColourKey);
 
     Input_RegisterKey(KEY_SPACE, SpaceKeyPressed)
     Input_RegisterMouseButton(BUTTON_LEFT, MouseButtonClicked)
