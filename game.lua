@@ -25,11 +25,11 @@
 -- OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
 -- DEALINGS IN THE SOFTWARE.
 
-GAME_STATE_TITLE_SCREEN = 	0
-GAME_STATE_PLAYING = 		1
-GAME_STATE_WIN = 			2
-GAME_STATE_DRAW = 			3
-GAME_STATE_LOSS = 			4
+GAME_STATE_TITLE_SCREEN =   0
+GAME_STATE_PLAYING =        1
+GAME_STATE_WIN =            2
+GAME_STATE_DRAW =           3
+GAME_STATE_LOSS =           4
 
 -- bit flags that are used to toggle the appropriate bit when the player/AI
 -- selects the relevant cell.
@@ -128,7 +128,10 @@ winningCombinations = { TOP_HORIZ_LINE, MIDDLE_HORIZ_LINE, BOTTOM_HORIZ_LINE, LE
 -- counter to keep track of how many turns have been made in the current game.
 round = 0;
 
-
+-- calculates the left and right pixel coordinates of each cell.
+-- this is needed for drawing and determining which cell the mouse has clicked on.
+-- Duh.
+-- :-D
 function BuildCellCoords(startingRow)
 	for y = 1, 3 do
 		yCellHeightStep = cellHeight * (y - 1);
