@@ -252,10 +252,10 @@ function MouseButtonClicked()
 end
 
 function Create()
-	gameColourKey = Video_MapRGB(255, 0, 255);
+    gameColourKey = Video_MapRGB(255, 0, 255);
 
-	bmpFont = BmpFont_Load(bmpFontCharWidth, bmpFontCharHeight, "data//art//green_font.bmp", gameColourKey);
-	logoSprite = Sprite_Load("data//art//logo.png", -1);
+    bmpFont = BmpFont_Load(bmpFontCharWidth, bmpFontCharHeight, "data//art//green_font.bmp", gameColourKey);
+    logoSprite = Sprite_Load("data//art//logo.png", -1);
 	boardSprite = Sprite_Load("data//art//blank_grid.png", gameColourKey);
 
     Input_RegisterKey(KEY_SPACE, SpaceKeyPressed)
