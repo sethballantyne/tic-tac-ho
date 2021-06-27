@@ -199,6 +199,7 @@ function DrawTitleScreen()
 	Sprite_Draw(logoSprite, 0, 420);
 end
 
+-- Renders the board and any pieces placed by both players
 function DrawBoard()
 	Sprite_Draw(boardSprite, boardCoords[1], boardCoords[2]);
 
@@ -212,12 +213,14 @@ function DrawBoard()
 	end
 end
 
+-- Renders the screen that's displayed when the game ends in a draw
 function DrawDrawScreen()
 	BmpFont_PrintLine(bmpFont, 20, "IT'S A GAPER!");
 	DrawBoard()
 	BmpFont_PrintLine(bmpFont, 443, "PRESS SPACE TO PLAY AGAIN! YAS!");
 end
 
+-- Renders the screen that's displayed when the game is being played
 function DrawGameScreen()
 	if turn == PLAYER_MEAT_BAG then
 		BmpFont_PrintLine(bmpFont, 20, string.format("ROUND %d", round));
@@ -226,18 +229,23 @@ function DrawGameScreen()
 	DrawBoard()
 end
 
+-- Renders the screen that's displayed when the game results in a loss
 function DrawLossScreen()
 	BmpFont_PrintLine(bmpFont, 20, "YOU LOST. HA.");
 	DrawBoard()
 	BmpFont_PrintLine(bmpFont, 443, "PRESS SPACE TO PLAY AGAIN! YAS!");
 end
 
+-- Renders the screen that's displayed when the game ends in a win for either player
 function DrawWinScreen()
 	BmpFont_PrintLine(bmpFont, 20, "YOU WIN, PIMP!");
 	DrawBoard()
 	BmpFont_PrintLine(bmpFont, 443, "PRESS SPACE TO PLAY AGAIN! YAS!");
 end
 
+-- The space key is used to start a game and leave the screens that are displayed
+-- when the game results in a win, loss or draw. Calling this when the key is pressed
+-- resets the game state.
 function SpaceKeyPressed()
 	if gameState == GAME_STATE_TITLE_SCREEN or
 	   gameState == GAME_STATE_LOSS or
@@ -251,6 +259,7 @@ function SpaceKeyPressed()
 	end
 end
 
+-- Handles the placing of game pieces when the mouse is clicked within a cell.
 function MouseButtonClicked()
 	if gameState == GAME_STATE_PLAYING and turn == PLAYER_MEAT_BAG then
 		local x, y = Input_GetMouseXY()
@@ -284,7 +293,7 @@ function MouseButtonClicked()
 	end
 end
 
--- called by V2D during initilization.
+-- called by V2D during initilization; put all the init code here.
 -- DON'T RENAME THIS FUNCTION.
 function Create()
     gameColourKey = Video_MapRGB(255, 0, 255);
@@ -299,10 +308,14 @@ function Create()
     BuildCellCoords()
 end
 
+-- returns 1 if the specified bit hasn't been set, else returns 0.
+-- bit: the integer being used to keep track of the pieces placed by each player (playerBoard and aiBoard)
 function CellIsEmpty(bit)
 	return ((playerBoard | aiBoard) & bit) ~= bit
 end
 
+-- scans the board for winning lines.
+-- returns true if one is found, otherwise false.
 function CheckForPossibleWin(playerType, bit)
 
 	local tempBoard = 0
@@ -411,6 +424,8 @@ function Render()
 	end
 end
 
+-- called by V2D; don't rename.
+-- this is called when the program terminates, so dump clean up code here.
 function Shutdown()
 
 end
