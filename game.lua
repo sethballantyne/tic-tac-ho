@@ -246,6 +246,7 @@ end
 -- The space key is used to start a game and leave the screens that are displayed
 -- when the game results in a win, loss or draw. Calling this when the key is pressed
 -- resets the game state.
+-- This is passed to V2D during initialization; see the Create() function.
 function SpaceKeyPressed()
 	if gameState == GAME_STATE_TITLE_SCREEN or
 	   gameState == GAME_STATE_LOSS or
@@ -260,6 +261,8 @@ function SpaceKeyPressed()
 end
 
 -- Handles the placing of game pieces when the mouse is clicked within a cell.
+-- This is passed to V2D during initialization so it knows to call it whenever the
+-- mouse is clicked: see the Create() function.
 function MouseButtonClicked()
 	if gameState == GAME_STATE_PLAYING and turn == PLAYER_MEAT_BAG then
 		local x, y = Input_GetMouseXY()
