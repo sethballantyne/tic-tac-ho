@@ -128,6 +128,39 @@ winningCombinations = { TOP_HORIZ_LINE, MIDDLE_HORIZ_LINE, BOTTOM_HORIZ_LINE, LE
 -- counter to keep track of how many turns have been made in the current game.
 round = 0;
 
+
+-- .----------------. .----------------. .----------------. .----------------.
+--| .--------------. | .--------------. | .--------------. | .--------------. |
+--| | _____  _____ | | |      __      | | |     _____    | | |  _________   | |
+--| ||_   _||_   _|| | |     /  \     | | |    |_   _|   | | | |  _   _  |  | |
+--| |  | | /\ | |  | | |    / /\ \    | | |      | |     | | | |_/ | | \_|  | |
+--| |  | |/  \| |  | | |   / ____ \   | | |      | |     | | |     | |      | |
+--| |  |   /\   |  | | | _/ /    \ \_ | | |     _| |_    | | |    _| |_     | |
+--| |  |__/  \__|  | | ||____|  |____|| | |    |_____|   | | |   |_____|    | |
+--| |              | | |              | | |              | | |              | |
+--| '--------------' | '--------------' | '--------------' | '--------------' |
+-- '----------------' '----------------' '----------------' '----------------'
+
+-- READ THIS FIRST BEFORE MODIFYING ANY CODE BELOW!!!!!11111oneone
+--
+-- V2D uses particular hooks to interact with the lua script. The functions Create(),
+-- Update() and Render() implemented below are *required* functions consumed by V2D.
+-- *DO NOT RENAME THESE FUNCTIONS OR CHANGE THE *NATURE* OF THEIR IMPLEMENTATION*.
+-- Create() handles initialization and is called *once* -- at startup. Update() and Render()
+-- are called during the each iteration of the game loop. Update() is used *only* for handling
+-- game logic, Render() *only* for drawing. Mmkay? mmkay. There's also Shutdown() if you want
+-- to do anything when the application terminates, but that isn't used in this script.
+-- In hindsight, I probably should have given these functions a V2D_* prefix or something.
+-- V2D has an internal game loop, so don't try to create one in lua; you'll just be dissapointed.
+
+-- Also, Seattle r0x0rz j0r b0x0rz.
+
+-- Okay, you may continue.
+
+-- HERE ENDS THE PSA!
+
+
+
 -- calculates the left and right pixel coordinates of each cell.
 -- this is needed for drawing and determining which cell the mouse has clicked on.
 -- Duh.
@@ -251,6 +284,8 @@ function MouseButtonClicked()
 	end
 end
 
+-- called by V2D during initilization.
+-- DON'T RENAME THIS FUNCTION.
 function Create()
     gameColourKey = Video_MapRGB(255, 0, 255);
 
@@ -345,6 +380,7 @@ function ProcessAI()
 	PlacePiece(PLAYER_AI, bit)
 end
 
+-- Called by V2D within the game loop; handle game processing here.
 function Update()
 	if gameState == GAME_STATE_PLAYING and turn == PLAYER_AI then
 		local result = ProcessAI()
@@ -360,6 +396,7 @@ function Update()
 	end
 end
 
+-- Called by V2D each frame; handle graphics rendering here, obviously.
 function Render()
 	if gameState == GAME_STATE_PLAYING then
 		DrawGameScreen()
