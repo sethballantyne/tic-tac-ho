@@ -215,7 +215,7 @@ end
 
 -- Renders the screen that's displayed when the game ends in a draw
 function DrawDrawScreen()
-	BmpFont_PrintLine(bmpFont, 20, "IT'S A GAPER!");
+	BmpFont_PrintLine(bmpFont, 20, "IT'S A DRAW! YAY MEDIOCRITY!");
 	DrawBoard()
 	BmpFont_PrintLine(bmpFont, 443, "PRESS SPACE TO PLAY AGAIN! YAS!");
 end
