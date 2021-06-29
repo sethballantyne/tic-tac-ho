@@ -7,6 +7,10 @@
 
 
 -- TIC-TAC-HO!
+--
+--
+-- MIT License
+--
 -- Copyright(c) 2021 Seth Ballantyne <seth.ballantyne@gmail.com>
 --
 -- Permission is hereby granted, free of charge, to any person obtaining a copy of this
