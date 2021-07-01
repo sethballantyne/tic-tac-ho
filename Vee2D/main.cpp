@@ -250,14 +250,21 @@ void ConsoleCMD_RunFunction(Console& console, vector<string>& args)
 
 void ConsoleCMD_DumpLog(Console& console, vector<string>& args)
 {
-	FILE* file;
-	
-	fopen_s(&file, "log.txt", "w");
+	FILE* file = NULL;
+
+	int retval = fopen_s(&file, "log.txt", "w");
+	if(retval != 0)
+	{
+		Console_Print(console, "ConsoleCMD_DumpLog: fopen_s failed.");
+		return;
+	}
+
 	for(string& s : console.outputBuffer.buffer)
 	{
 		fprintf(file, "%s\n", s.c_str());
 	}
 
+	Console_Print(console, "log successfully written to log.txt");
 	fflush(file);
 	fclose(file);
 }
