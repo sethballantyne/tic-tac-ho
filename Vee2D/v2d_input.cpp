@@ -81,6 +81,18 @@ int V2D_Input_GetMouseXY(lua_State* state)
 	return 2;
 }
 
+int V2D_Input_GetMouseX(lua_State* state)
+{
+	lua_pushnumber(state, event.motion.x);
+	return 1;
+}
+
+int V2D_Input_GetMouseY(lua_State* state)
+{
+	lua_pushnumber(state, event.motion.y);
+	return 1;
+}
+
 int V2D_Input_RegisterKey(lua_State* state)
 {
 	int key = luaL_checkinteger(state, 1);

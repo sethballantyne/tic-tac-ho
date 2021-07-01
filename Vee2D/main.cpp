@@ -73,18 +73,6 @@ int Print(lua_State* state)
 //	return 0;
 //}
 
-int GetMouseX(lua_State* state)
-{
-	lua_pushnumber(state, mouseX);
-	return 1;
-}
-
-int GetMouseY(lua_State* state)
-{
-	lua_pushnumber(state, mouseY);
-	return 1;
-}
-
 void Cleanup()
 {
 	if(nullptr != screen)
@@ -216,8 +204,7 @@ int main(int argc, char** argv)
 
 void RegisterCPPFunctions()
 {
-	V2D_Lua_RegisterFunction(GetMouseX, "GetMouseX");
-	V2D_Lua_RegisterFunction(GetMouseY, "GetMouseY");
+
 	//V2D_Lua_RegisterFunction(RegisterKey, "RegisterKey");
 	V2D_Lua_RegisterFunction(Print, "Console_Print");
 
@@ -229,6 +216,8 @@ void RegisterCPPFunctions()
 	V2D_Lua_RegisterFunction(V2D_Input_RegisterKey, "Input_RegisterKey");
 	V2D_Lua_RegisterFunction(V2D_Input_RegisterMouseButton, "Input_RegisterMouseButton");
 	V2D_Lua_RegisterFunction(V2D_Input_GetMouseXY, "Input_GetMouseXY");
+	V2D_Lua_RegisterFunction(V2D_Input_GetMouseX, "GetMouseX");
+	V2D_Lua_RegisterFunction(V2D_Input_GetMouseY, "GetMouseY");
 
 	// Sprite functions - v2d_sprite.cpp
 	V2D_Lua_RegisterFunction(V2D_Sprite_Load, "Sprite_Load");
