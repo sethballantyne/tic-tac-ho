@@ -47,8 +47,7 @@ void RegisterConsoleCommands();
 
 int functionReference = 0;
 int key = 0;
-int mouseX = 0;
-int mouseY = 0;
+
 Console gameConsole;
 
 const string luaFile = "game.lua";
@@ -130,9 +129,6 @@ int main(int argc, char** argv)
 	V2D_Lua_ExecFunction("Create");
 
 	bool quit = false;
-	int f = 1 | 2 | 4 | 8;
-	int d = f & (1 | 2 | 4);
-	cout << d;
 
 	while(!quit)
 	{
@@ -177,8 +173,6 @@ int main(int argc, char** argv)
 					break;
 			}
 		}
-
-		SDL_GetMouseState(&mouseX, &mouseY);
 
 		V2D_Lua_ExecFunction("Update");
 
