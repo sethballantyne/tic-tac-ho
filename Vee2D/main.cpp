@@ -85,31 +85,6 @@ int GetMouseY(lua_State* state)
 	return 1;
 }
 
-int DrawQuad(lua_State* state)
-{
-	int x = luaL_checknumber(state, 1);
-	int y = luaL_checknumber(state, 2);
-	int width = luaL_checknumber(state, 3);
-	int height = luaL_checknumber(state, 4);
-	unsigned char R = luaL_checknumber(state, 5);
-	unsigned char G = luaL_checknumber(state, 6);
-	unsigned char B = luaL_checknumber(state, 7);
-
-	Uint32 colour = SDL_MapRGB(screen->format, R, G, B);
-
-	SDL_Rect rect;
-
-	rect.h = height;
-	rect.w = width;
-	rect.x = x;
-	rect.y = y;
-	SDL_FillRect(screen, &rect, colour);
-
-	return 0;
-}
-
-
-
 void Cleanup()
 {
 	if(nullptr != screen)
@@ -243,7 +218,6 @@ void RegisterCPPFunctions()
 {
 	V2D_Lua_RegisterFunction(GetMouseX, "GetMouseX");
 	V2D_Lua_RegisterFunction(GetMouseY, "GetMouseY");
-	V2D_Lua_RegisterFunction(DrawQuad, "DrawQuad");
 	//V2D_Lua_RegisterFunction(RegisterKey, "RegisterKey");
 	V2D_Lua_RegisterFunction(Print, "Console_Print");
 
@@ -262,6 +236,7 @@ void RegisterCPPFunctions()
 
 	// Video functions - v2d_video.cpp
 	V2D_Lua_RegisterFunction(V2D_Video_MapRGB, "Video_MapRGB");
+	V2D_Lua_RegisterFunction(V2D_Video_DrawQuad, "Video_DrawQuad");
 
 	// Debug functions
 	V2D_Lua_RegisterFunction(V2D_Lua_HaltExecution, "Debug_Halt");

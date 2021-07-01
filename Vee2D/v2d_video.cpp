@@ -40,3 +40,26 @@ int V2D_Video_MapRGB(lua_State* state)
 
 	return 1;
 }
+
+int V2D_Video_DrawQuad(lua_State* state)
+{
+	int x = luaL_checknumber(state, 1);
+	int y = luaL_checknumber(state, 2);
+	int width = luaL_checknumber(state, 3);
+	int height = luaL_checknumber(state, 4);
+	unsigned char R = luaL_checknumber(state, 5);
+	unsigned char G = luaL_checknumber(state, 6);
+	unsigned char B = luaL_checknumber(state, 7);
+
+	Uint32 colour = SDL_MapRGB(screen->format, R, G, B);
+
+	SDL_Rect rect;
+
+	rect.h = height;
+	rect.w = width;
+	rect.x = x;
+	rect.y = y;
+	SDL_FillRect(screen, &rect, colour);
+
+	return 0;
+}

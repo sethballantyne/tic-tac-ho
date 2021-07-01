@@ -210,9 +210,9 @@ function DrawBoard()
 	for i = 1, 9 do
 		local bit = 1 << (i - 1);
 		if playerBoard & bit == bit then
-			DrawQuad(cellCoords[i][1], cellCoords[i][2], cellWidth, cellHeight, 255, 0, 0)
+			Video_DrawQuad(cellCoords[i][1], cellCoords[i][2], cellWidth, cellHeight, 255, 0, 0)
 		elseif aiBoard & bit == bit then
-			DrawQuad(cellCoords[i][1], cellCoords[i][2], cellWidth, cellHeight, 255, 255, 0)
+			Video_DrawQuad(cellCoords[i][1], cellCoords[i][2], cellWidth, cellHeight, 255, 255, 0)
 		end
 	end
 end
