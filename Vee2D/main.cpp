@@ -58,18 +58,6 @@ int Print(lua_State* state)
 	return 0;
 }
 
-//int RegisterKey(lua_State* state)
-//{
-//	key = luaL_checkint(state, 1);
-//	if(lua_isfunction(state, 2))
-//	{
-//		lua_pushvalue(state, 2);
-//		functionReference = luaL_ref(state, LUA_REGISTRYINDEX);	
-//	}
-//
-//	return 0;
-//}
-
 void Cleanup()
 {
 	if(nullptr != screen)
