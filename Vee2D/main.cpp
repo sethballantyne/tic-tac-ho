@@ -40,8 +40,6 @@ using namespace console;
 SDL_Surface* screen = nullptr;
 SDL_Event event;
 
-extern map<int, int> inputPool;
-
 void RegisterCPPFunctions();
 void RegisterConsoleCommands();
 
