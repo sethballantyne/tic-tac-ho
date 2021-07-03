@@ -26,6 +26,8 @@
 #include <SDL_image.h>
 #include <iostream>
 #include <map>
+#include <windows.h>
+#include <sstream>
 #include "console.h"
 #include "v2d_lua.h"
 #include "v2d_common.h"
@@ -68,20 +70,26 @@ void Cleanup()
 	SDL_Quit();
 }
 
+void Win32ErrMsgBox(const char* msgPrefix)
+{
+	stringstream s;
+	s << msgPrefix << SDL_GetError();
+
+	MessageBox(0, s.str().c_str(), "Unholy Error", MB_OK | MB_ICONEXCLAMATION);
+}
+
 int main(int argc, char** argv)
 {
-	int result = SDL_Init(SDL_INIT_VIDEO);
-	if(0 != result)
-	{
-		return -1;
-	}
+	int result;
 
 	atexit(Cleanup);
 
-	screen = SDL_SetVideoMode(640, 480, 32, SDL_HWSURFACE | SDL_DOUBLEBUF);
-	if(!screen)
+	result = V2D_Video_CreateWindow(640, 480, 32, false);
+	if(V2D_ERROR == result)
 	{
-		return -1;
+		Win32ErrMsgBox("V2D_Video_CreateWindow failed: ");
+	
+		return EXIT_FAILURE;
 	}
 
 	SDL_Colour consoleFontColour = { 0, 255, 0 };
@@ -110,7 +118,16 @@ int main(int argc, char** argv)
 
 	V2D_Lua_ExecScript(luaFile);
 
+	// should probably just create a default image that it can fall back to,
+	// but whatever. 
 	SDL_Surface* bg = SDL_LoadBMP("data\\art\\consolebg.bmp");
+	if(!bg)
+	{
+		Win32ErrMsgBox("SDL_LoadBMP failed: ");
+
+		return EXIT_FAILURE;
+	}
+
 	Console_SetBackground(gameConsole, bg);
 	V2D_Lua_ExecFunction("Create");
 

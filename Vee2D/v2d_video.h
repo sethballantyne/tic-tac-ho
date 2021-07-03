@@ -25,6 +25,9 @@
 #pragma once
 #include <lua.hpp>
 
+/// INTERAL FUNCTIONS //////////////////////////////////////////////////////////
+int V2D_Video_CreateWindow(int width, int height, int bpp, bool fullscreen);
+
 /// FUNCTIONS EXPOSED TO LUA //////////////////////////////////////////////////
 int V2D_Video_MapRGB(lua_State*);
 int V2D_Video_DrawQuad(lua_State* state);

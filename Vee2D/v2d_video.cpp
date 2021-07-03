@@ -23,9 +23,28 @@
 */
 
 #include <SDL.h>
+#include "v2d_common.h"
 #include "v2d_video.h"
 
 extern SDL_Surface* screen;
+
+int V2D_Video_CreateWindow(int width, int height, int bpp, bool fullscreen)
+{
+	Uint32 flags = SDL_HWSURFACE | SDL_DOUBLEBUF;
+
+	if(fullscreen)
+	{
+		flags |= SDL_FULLSCREEN;
+	}
+
+	screen = SDL_SetVideoMode(640, 480, 32, flags);
+	if(!screen)
+	{
+		return V2D_ERROR;
+	}
+
+	return V2D_SUCCESS;
+}
 
 /// FUNCTIONS EXPOSED TO LUA //////////////////////////////////////////////////
 int V2D_Video_MapRGB(lua_State* state)
