@@ -26,7 +26,7 @@
 #include "v2d_common.h"
 #include "v2d_video.h"
 
-extern SDL_Surface* screen;
+SDL_Surface* screen = nullptr;
 
 int V2D_Video_CreateWindow(int width, int height, int bpp, bool fullscreen)
 {
@@ -44,6 +44,14 @@ int V2D_Video_CreateWindow(int width, int height, int bpp, bool fullscreen)
 	}
 
 	return V2D_SUCCESS;
+}
+
+void V2D_Video_Shutdown()
+{
+	if(nullptr != screen)
+	{
+		SDL_FreeSurface(screen);
+	}
 }
 
 /// FUNCTIONS EXPOSED TO LUA //////////////////////////////////////////////////

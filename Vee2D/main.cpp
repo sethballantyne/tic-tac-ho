@@ -39,7 +39,7 @@
 using namespace std;
 using namespace console;
 
-SDL_Surface* screen = nullptr;
+extern SDL_Surface* screen;
 SDL_Event event;
 
 void RegisterCPPFunctions();
@@ -62,10 +62,7 @@ int Print(lua_State* state)
 
 void Cleanup()
 {
-	if(nullptr != screen)
-	{
-		SDL_FreeSurface(screen);
-	}
+	V2D_Video_Shutdown();
 
 	SDL_Quit();
 }

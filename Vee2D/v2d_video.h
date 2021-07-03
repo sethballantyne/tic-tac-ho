@@ -27,6 +27,7 @@
 
 /// INTERAL FUNCTIONS //////////////////////////////////////////////////////////
 int V2D_Video_CreateWindow(int width, int height, int bpp, bool fullscreen);
+void V2D_Video_Shutdown();
 
 /// FUNCTIONS EXPOSED TO LUA //////////////////////////////////////////////////
 int V2D_Video_MapRGB(lua_State*);
